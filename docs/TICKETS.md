@@ -107,3 +107,8 @@ integrates) · ❌ foundational/serial.
   Deps: 003. T2.
 - **SLATE-050** As-of preview: render a model as it will look at a future date T.
   Deps: 001. T2/T3.
+- **SLATE-014** Reconcile apply-result in the runner + real sweep counts: after SLATE-010,
+  `Apply` returns `Failure` for invalid changes, but `ApplyDue` (SLATE-011) treats any
+  non-exception result as applied — so validation-failed changes inflate `applied_count`.
+  Make `ApplyDue` inspect the result (count only successes), and wire real
+  `failed_count`/`conflicted_count` into `sweep_runs` (currently hardcoded 0). Deps: 010, 011, 013. T1.
