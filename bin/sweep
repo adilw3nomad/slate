@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+# Slate's DB-backed job runner — no Sidekiq, no Redis.
+# Applies every scheduled change whose apply_at has passed.
+#
+#   bin/sweep            run once
+#   bin/sweep --watch    run every 10s (Ctrl+C to stop)
+#   bin/sweep --watch 30 run every 30s
+
+require "hanami/prepare"
+
+def sweep
+  count = Slate::App["changes.apply_due"].call.value!
+  puts "[slate sweep] #{Time.now.strftime("%Y-%m-%d %H:%M:%S")} — applied #{count} change(s)"
+end
+
+if ARGV.include?("--watch")
+  interval = (ARGV[ARGV.index("--watch") + 1] || 10).to_i
+  interval = 10 if interval <= 0
+  puts "[slate sweep] watching every #{interval}s. Ctrl+C to stop."
+  trap("INT") { puts "\n[slate sweep] stopped."; exit 0 }
+  loop do
+    sweep
+    sleep interval
+  end
+else
+  sweep
+end

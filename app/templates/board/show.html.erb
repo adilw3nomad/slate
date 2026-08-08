@@ -1,0 +1,24 @@
+<main class="wrap">
+  <div class="page-head">
+    <h1>Menu board</h1>
+    <p class="muted">What customers see right now. Edit an item to stage a draft or a scheduled change.</p>
+  </div>
+
+  <div class="grid">
+    <% items.each do |item| %>
+      <article class="card">
+        <div class="card-top">
+          <h2><%= item.name %></h2>
+          <% if pending_ids.include?(item.id) %>
+            <span class="badge badge-pending">Pending</span>
+          <% end %>
+        </div>
+        <p class="desc"><%= item.description %></p>
+        <div class="card-bottom">
+          <span class="price"><%= Slate::Money.new(item.price_cents) %></span>
+          <a class="btn btn-ghost" href="/items/<%= item.id %>/edit">Edit</a>
+        </div>
+      </article>
+    <% end %>
+  </div>
+</main>

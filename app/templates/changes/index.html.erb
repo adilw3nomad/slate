@@ -1,0 +1,52 @@
+<main class="wrap">
+  <div class="page-head">
+    <h1>Pending changes</h1>
+    <p class="muted">Drafts wait for you to publish. Scheduled changes apply automatically when the sweeper runs.</p>
+  </div>
+
+  <% drafts = changes.select { |c| c[:draft] } %>
+  <% scheduled = changes.reject { |c| c[:draft] } %>
+
+  <% if changes.empty? %>
+    <div class="empty">No pending changes. Edit an item on the board to stage one.</div>
+  <% end %>
+
+  <% [["Drafts", drafts], ["Scheduled", scheduled]].each do |label, list| %>
+    <% next if list.empty? %>
+    <h2 class="section"><%= label %></h2>
+    <div class="changes">
+      <% list.each do |c| %>
+        <article class="change card">
+          <div class="change-head">
+            <h3><%= c[:item_name] %></h3>
+            <% if c[:draft] %>
+              <span class="badge badge-draft">Draft</span>
+            <% else %>
+              <span class="badge badge-sched">Scheduled · <%= c[:apply_at].strftime("%d %b, %H:%M") %></span>
+            <% end %>
+          </div>
+
+          <ul class="diffs">
+            <% c[:diffs].each do |d| %>
+              <li>
+                <span class="field"><%= field_label(d[:field]) %></span>
+                <span class="before"><%= format_field(d[:field], d[:before]) %></span>
+                <span class="arrow">→</span>
+                <span class="after"><%= format_field(d[:field], d[:after]) %></span>
+              </li>
+            <% end %>
+          </ul>
+
+          <div class="change-actions">
+            <form method="post" action="/changes/<%= c[:id] %>/publish">
+              <button class="btn btn-primary" type="submit">Publish now</button>
+            </form>
+            <form method="post" action="/changes/<%= c[:id] %>/cancel">
+              <button class="btn btn-ghost" type="submit">Cancel</button>
+            </form>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  <% end %>
+</main>
