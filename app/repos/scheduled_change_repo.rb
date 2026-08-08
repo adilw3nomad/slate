@@ -30,6 +30,11 @@ module Slate
           .changeset(:update, status: "applied", applied_at: at).commit
       end
 
+      def mark_failed(id, error)
+        scheduled_changes.by_pk(id).where(status: "pending")
+          .changeset(:update, status: "failed", last_error: error).commit
+      end
+
       def mark_cancelled(id)
         scheduled_changes.by_pk(id).where(status: "pending")
           .changeset(:update, status: "cancelled").commit
