@@ -34,6 +34,16 @@ module Slate
         scheduled_changes.by_pk(id).where(status: "pending")
           .changeset(:update, status: "cancelled").commit
       end
+
+      # Pending changes that expired before ever being applied.
+      def expirable(now = Time.now)
+        scheduled_changes.where(status: "pending").where { expires_at <= now }.to_a
+      end
+
+      def mark_expired(id)
+        scheduled_changes.by_pk(id).where(status: "pending")
+          .changeset(:update, status: "expired").commit
+      end
     end
   end
 end
