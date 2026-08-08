@@ -41,4 +41,16 @@ RSpec.describe Slate::Changes::Apply, :db do
 
     expect(operation.call(change)).to be_failure
   end
+
+  it "re-validates staged attrs at apply time and rejects invalid ones without touching the target" do
+    change = stage(%({"price_cents":-5}))
+
+    result = operation.call(change)
+
+    expect(result).to be_failure
+    expect(items.find(item.id).price_cents).to eq(350)
+    reloaded_change = changes.find(change.id)
+    expect(reloaded_change.status).to eq("failed")
+    expect(reloaded_change.last_error).not_to be_nil
+  end
 end
