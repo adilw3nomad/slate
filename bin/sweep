@@ -12,7 +12,15 @@ require "hanami/prepare"
 
 def sweep
   Slate::App["changes.expire_stale"].call.value!
+
+  started_at = Time.now
   count = Slate::App["changes.apply_due"].call.value!
+  finished_at = Time.now
+
+  Slate::App["repos.sweep_run_repo"].create(
+    started_at: started_at, finished_at: finished_at, applied_count: count, failed_count: 0
+  )
+
   puts "[slate sweep] #{Time.now.strftime("%Y-%m-%d %H:%M:%S")} — applied #{count} change(s)"
 end
 

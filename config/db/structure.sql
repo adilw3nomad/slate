@@ -32,7 +32,15 @@ CREATE INDEX `scheduled_changes_status_apply_at_index` ON `scheduled_changes`(
   `status`,
   `apply_at`
 );
+CREATE TABLE `sweep_runs`(
+  `id` integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+  `started_at` timestamp NOT NULL,
+  `finished_at` timestamp,
+  `applied_count` integer DEFAULT(0) NOT NULL,
+  `failed_count` integer DEFAULT(0) NOT NULL
+);
 INSERT INTO schema_migrations (filename) VALUES
 ('20260808172639_create_menu_items.rb'),
 ('20260808172640_create_scheduled_changes.rb'),
-('20260808194814_add_scheduling_columns_to_scheduled_changes.rb');
+('20260808194814_add_scheduling_columns_to_scheduled_changes.rb'),
+('20260808195318_create_sweep_runs.rb');
