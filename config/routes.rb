@@ -10,5 +10,7 @@ module Slate
     get "/changes", to: "changes.index"
     post "/changes/:id/publish", to: "changes.publish"
     post "/changes/:id/cancel", to: "changes.cancel"
+
+    get "/runs", to: "runs.index"
   end
 end

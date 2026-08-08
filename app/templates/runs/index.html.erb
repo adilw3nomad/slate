@@ -1,0 +1,25 @@
+<main class="wrap">
+  <div class="page-head">
+    <h1>Sweep runs</h1>
+    <p class="muted">A record of each time the sweeper ran and applied due changes.</p>
+  </div>
+
+  <% if runs.empty? %>
+    <div class="empty">No sweep runs yet. Run bin/sweep to record one.</div>
+  <% else %>
+    <div class="changes">
+      <% runs.each do |run| %>
+        <article class="change card">
+          <div class="change-head">
+            <h3><%= run.started_at.strftime("%d %b, %H:%M:%S") %></h3>
+            <span class="badge badge-ok"><%= run.applied_count %> applied</span>
+          </div>
+          <p class="muted">
+            Finished <%= run.finished_at&.strftime("%d %b, %H:%M:%S") || "—" %>
+            &middot; <%= run.failed_count %> failed
+          </p>
+        </article>
+      <% end %>
+    </div>
+  <% end %>
+</main>
